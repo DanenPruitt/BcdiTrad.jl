@@ -42,6 +42,20 @@ function operate(er::ER, state::State)
     enforceSupport(state)
 end
 
+
+"""
+    SF()
+
+"""
+struct SF <: Operator
+end
+
+function operate(sf::SF, state::State)
+    BcdiCore.loss(state.core, true, false, false)
+    state.realSpace .-= state.core.deriv ./ 2.0
+    state.realSpace .*= 2 .* state.support .- 1
+end
+
 """
     HIO(beta)
 
@@ -73,6 +87,56 @@ function operate(hio::HIO, state::State)
         (state.realSpace .- state.core.deriv ./ 2.0) .* state.support .+
         (state.realSpace .* (1.0 .- hio.beta) .+ hio.beta .* state.core.deriv ./ 2.0) .* .!state.support
 end
+
+"""
+    DM
+"""
+struct DM <: Operator
+    beta::Float64
+end
+
+function operat(dm::DM, state::State)
+    BcdiCore.loss(state.core, true, false,false)
+    state.realSpace .-=
+#Unfinished---------------------------------------------------------------------------------------------------     
+
+
+    
+"""
+    ASR
+"""
+struct ASR <: Operator
+end
+
+function operate(asr::ASR, state::State)
+    BcdiCore.loss(state.core, true, false, false)
+    state.realSpace .+= 
+        (2 .* (state.realSpace .- state.core.deriv ./ 2.0) .* state.support) .-
+        (state.realSpace .* state.support) .- (state.realSpace .- state.core.deriv ./ 2.0) 
+end
+
+"""
+    HPR
+"""
+
+
+
+
+"""
+    RAAR
+"""
+struct RAAR <: Operator
+    beta::Float64
+end
+
+function operate(raar::RAAR, state::State)
+    BcdiCore.loss(state.corw, true, false, false)
+    state.realSpace .+= 
+        ((2 .* (state.realSpace .- state.core.deriv ./ 2.0) .* state.support) .-
+        (state.realSpace .* state.support) .- (state.realSpace .- state.core.deriv ./ 2.0) .* raar.beta) .+
+        ((1.0 .- hio.beta) .* (state.realSpace .– state.core.deriv ./ 2.0)
+end
+    
 
 """
     Shrink(threshold, sigma, state::State)
