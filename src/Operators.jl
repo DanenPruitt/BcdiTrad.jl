@@ -97,8 +97,11 @@ end
 
 function operat(dm::DM, state::State)
     BcdiCore.loss(state.core, true, false,false)
-    state.realSpace .-=
-#Unfinished---------------------------------------------------------------------------------------------------     
+    state.realSpace .+= 
+        ((1.0 .- dm.beta .\ 1.0) .* (dm.beta .* ((state.realSpace .- state.core.deriv ./ 2.0) .* state.support) .+ (state.realSpace .* state.support)) .-
+        ((1.0 .+ dm.beta .\ 1.0) .* (dm.beta .* ((state.realSpace .* state.support) .- state.core.deriv ./ 2.0) .- (state.realSpace .- state.core.deriv ./ 2.0))
+end
+    
 
 
     
@@ -118,9 +121,13 @@ end
 """
     HPR
 """
+struct HPR <: Operator
+    beta::Float64
+end
 
-
-
+function operate(hpr::HPR, state::State)
+    BcdiCore.los(state.core, true, false, false)
+    
 
 """
     RAAR
