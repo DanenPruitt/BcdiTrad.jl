@@ -127,7 +127,11 @@ end
 
 function operate(hpr::HPR, state::State)
     BcdiCore.los(state.core, true, false, false)
-    
+    state.realSpace.=
+        ((4.0 .* (state.realSpace .- state.core.deriv ./ 2.0) .* state.support) .-
+        2.0 .* (state.realSpace .* state.support) .- 2.0 .* (state.realSpace .- state.core.deriv ./ 2.0) .+
+        state.realSpace .+ ((hpr.beta .- 1.0) .* 2.0 .* ((state.realSpace .- state.core.deriv ./ 2.0) .* state.support) .- (state.realSpace .- state.core.deriv ./ 2.0))
+        .+ state.realSpace .+ ((1.0 .- hpr.beta) .* (state.realSpace .- state.core.deriv ./ 2.0)))
 
 """
     RAAR
